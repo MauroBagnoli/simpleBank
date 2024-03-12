@@ -6,21 +6,29 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/lib/pq"
+	"tutorial.sqlc.dev/app/api"
 	db "tutorial.sqlc.dev/app/db/sqlc"
+	"tutorial.sqlc.dev/app/util"
 )
 
-var Queries *db.Queries
-var DB *pgxpool.Pool
-
 func main() {
-	var err error
+	config, err := util.LoadConfig(".")
+	if err != nil {
+		log.Fatal("cannot load config:", err)
+	}
+
 	ctx := context.Background()
 
-	// TODO: Extract postgress conection string to reuse in main_test
-	DB, err = pgxpool.New(ctx, "postgresql://root:admin@localhost:5432/simple_bank")
+	conn, err := pgxpool.New(ctx, config.DBSource)
 	if err != nil {
 		log.Fatal("Cannot connect to db:", err)
 	}
 
-	Queries = db.New(DB)
+	store := db.NewStore(conn)
+	server := api.NewServer(store)
+
+	err = server.Start(config.ServerAddress)
+	if err != nil {
+		log.Fatal("cannot start server:", err)
+	}
 }

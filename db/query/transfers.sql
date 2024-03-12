@@ -7,11 +7,11 @@ INSERT INTO transfers (
   $1, $2, $3
 ) RETURNING *;
 
--- name: getTransfer :one
+-- name: GetTransfer :one
 SELECT * FROM transfers
 WHERE id = $1 LIMIT 1;
 
--- name: listTransfers :many
+-- name: ListTransfers :many
 SELECT * FROM transfers
 ORDER BY id
 LIMIT $1

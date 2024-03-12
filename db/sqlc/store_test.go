@@ -51,7 +51,7 @@ func TestTransferTx(t *testing.T) {
 		require.NotZero(t, transfer.ID)
 		require.NotZero(t, transfer.CreatedAt)
 
-		_, err = store.getTransfer(context.Background(), transfer.ID)
+		_, err = store.GetTransfer(context.Background(), transfer.ID)
 		require.NoError(t, err)
 
 		// check entries
@@ -61,7 +61,7 @@ func TestTransferTx(t *testing.T) {
 		require.Equal(t, -amount, fromEntry.Amount)
 		require.NotZero(t, fromEntry.CreatedAt)
 
-		_, err = store.getEntry(context.Background(), fromEntry.ID)
+		_, err = store.GetEntry(context.Background(), fromEntry.ID)
 		require.NoError(t, err)
 
 		toEntry := result.ToEntry
@@ -70,7 +70,7 @@ func TestTransferTx(t *testing.T) {
 		require.Equal(t, amount, toEntry.Amount)
 		require.NotZero(t, toEntry.CreatedAt)
 
-		_, err = store.getEntry(context.Background(), toEntry.ID)
+		_, err = store.GetEntry(context.Background(), toEntry.ID)
 		require.NoError(t, err)
 
 		// Check accounts
@@ -97,10 +97,10 @@ func TestTransferTx(t *testing.T) {
 	}
 
 	// check the final updated balances
-	updatedAccount1, err := testQueries.getAccount(context.Background(), account1.ID)
+	updatedAccount1, err := testQueries.GetAccount(context.Background(), account1.ID)
 	require.NoError(t, err)
 
-	updatedAccount2, err := testQueries.getAccount(context.Background(), account2.ID)
+	updatedAccount2, err := testQueries.GetAccount(context.Background(), account2.ID)
 	require.NoError(t, err)
 
 	require.Equal(t, account1.Balance-int64(n)*amount, updatedAccount1.Balance)
@@ -146,10 +146,10 @@ func TestTransferTxDeadlock(t *testing.T) {
 	}
 
 	// check the final updated balances
-	updatedAccount1, err := testQueries.getAccount(context.Background(), account1.ID)
+	updatedAccount1, err := testQueries.GetAccount(context.Background(), account1.ID)
 	require.NoError(t, err)
 
-	updatedAccount2, err := testQueries.getAccount(context.Background(), account2.ID)
+	updatedAccount2, err := testQueries.GetAccount(context.Background(), account2.ID)
 	require.NoError(t, err)
 
 	require.Equal(t, account1.Balance, updatedAccount1.Balance)
